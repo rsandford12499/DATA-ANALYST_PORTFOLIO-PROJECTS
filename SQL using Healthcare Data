@@ -1,0 +1,363 @@
+--1. Creating My Database before importing files from .xls
+
+CREATE DATABASE HEALTHCARE_DB
+
+--2. IF THEN Statement to make sure the 
+
+IF OBJECT_ID('FactTable') IS NOT NULL DROP TABLE FactTable
+GO
+
+IF OBJECT_ID('dimPatient') IS NOT NULL  DROP Table dimPatient
+GO
+
+IF OBJECT_ID('dimTransaction') IS NOT NULL Drop Table dimTransaction
+Go
+
+IF OBJECT_ID('dimPhysician') IS NOT NULL DROP Table dimPhysician
+Go
+
+IF OBJECT_ID('dimPayer') IS NOT NULL DROP Table dimPayer
+GO
+
+IF OBJECT_ID('dimLocation') IS NOT NULL DROP TABLE dimLocation
+GO
+
+IF OBJECT_ID('dimDiagnosisCode') IS NOT NULL DROP TABLE dimDiagnosisCode
+GO
+
+IF OBJECT_ID('dimCPTCode') IS NOT NULL DROP TABLE dimCPTCode
+GO
+
+IF OBJECT_ID('dimDate') IS NOT NULL DROP TABLE dimDate
+GO
+
+USE HEALTHCARE_DB;
+
+ --3. Creating Tables with data type, Primary Key and Foriegn Key
+
+CREATE TABLE FactTable
+	(FactTablePK varchar (255) NOT NULL Primary Key
+	,dimPatientPK varchar (255) NOT NULL
+	,dimPhysicianPK varchar (255) NOT NULL
+	,dimDatePostPK varchar (255) NOT NULL
+	,dimDateServicePK varchar (255) NOT NULL
+	,dimCPTCodePK varchar (255) NOT NULL
+	,dimPayerPK varchar (255) NOT NULL
+	,dimTransactionPK varchar (255) NOT NULL
+	,dimLocationPK varchar (255) NOT NULL
+	,PatientNumber varchar (255) NOT NULL
+	,dimDiagnosisCodePK varchar (255) NOT NULL
+	,CPTUnits decimal(12,2) Null DEFAULT 0
+	,GrossCharge decimal(12,2) Null DEFAULT 0
+	,Paytment decimal(12,2) Null DEFAULT 0
+	,Adjustment decimal(12,2) Null DEFAULT 0
+	,AR decimal(12,2) NUll DEFAULT 0 
+	);
+
+CREATE TABLE dimPatient
+	(dimPatientPK varchar (255) NOT NULL Primary Key
+	,PatientNumber varchar (255) NULL
+	,FirstName varchar (255) NULL
+	,LastName varchar (255) NULL
+	,Email varchar (255) NULL
+	,PatientGender varchar (255) NULL
+	,PatientAge varchar (255) NULL
+	,City varchar (255) NULL
+	,State varchar (255) NULL
+	);
+
+CREATE TABLE dimTransaction
+	(dimTransactionPK varchar (255) NOT NULL Primary Key
+	,TransactionType varchar (255)  NULL
+	,[Transaction] varchar (255)  NULL
+	,AdjustmentReason varchar (255) NULL
+	);
+
+CREATE TABLE dimPhysician
+	(dimPhysicianPK varchar (255) NOT NULL Primary Key
+	,ProviderNpi varchar (255) Null
+	,ProviderName varchar (255) Null
+	,ProviderSpecialty varchar (255) Null
+	,ProviderFTE decimal(10,2) Null DEFAULT 0
+	);
+
+CREATE TABLE dimPayer
+	(dimPayerPK varchar (255) Not NUll Primary Key
+	,PayerName varchar (255) Null
+	);
+
+CREATE TABLE dimLocation
+	(dimLocationPK varchar (255) Not NULL Primary Key
+	,LocationName varchar (255) Null
+	);
+
+CREATE TABLE dimDiagnosisCode
+	(dimDiagnosisCodePK varchar (255) NOT NULL Primary Key
+	,DiagnosisCode varchar (255) Null
+	,DiagnosisCodeDescription varchar (255) Null
+	,DiagnosisCodeGroup varchar (255) Null
+	);
+
+CREATE TABLE dimCptCode
+	(dimCPTCodePK varchar (255) Not Null Primary Key
+	,CptDesc varchar (255) Null
+	,CptGrouping varchar (255) Null
+	);
+
+CREATE TABLE dimDate
+	(dimDatePostPK varchar (255) NOT NULL Primary Key
+	,[Date] [date] Null
+	,[Year] varchar (255) Null
+	,[Month] varchar (255) Null
+	,MonthPeriod varchar (255) Null
+	,MonthYear varchar (255) Null
+	,[Day] varchar (255) Null
+	,[DayName] varchar (255) Null
+	);
+
+--4. CHECKING MY COLUMNS
+
+--Select * from FactTable 
+--Select * from dimPatient
+--Select * from dimPhysician
+--Select * from dimTransaction
+--Select * from dimPayer
+--Select * from dimLocation
+--Select * from dimDiagnosisCode
+--Select * from dimCptCode
+--Select * from dimDate
+
+--5. FINISHED Importing Data 
+	--Rechecking syntax above to verify the data was imported properly
+
+
+--6. Specifying ForeignKeys
+
+IF OBJECT_ID('FK_dimPatientPK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimPatientPK
+GO
+IF OBJECT_ID('FK_dimPhysicianPK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimPhysicianPK
+GO
+IF OBJECT_ID('FK_dimTransactionPK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimTransactionPK
+GO
+IF OBJECT_ID('FK_dimPayerPK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimPayerPK
+GO
+IF OBJECT_ID('FK_dimLocationPK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimLocationPK
+GO
+IF OBJECT_ID('FK_dimDiagnosisCodePK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimDiagnosisCodePK
+GO
+IF OBJECT_ID('FK_dimCptCodePK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimCptCodePK
+GO
+IF OBJECT_ID('FK_dimDatePK') IS NOT NULL Alter Table FactTable DROP Constraint FK_dimDatePK
+GO
+
+
+ALTER TABLE FactTable
+ADD 
+	Constraint FK_dimPatientPK Foreign Key (dimPatientPK) References dimPatient(dimPatientPK)
+	,Constraint FK_dimPhysicianPK Foreign Key (dimPhysicianPK) References dimPhysician(dimPhysicianPK)
+	,Constraint FK_dimDatePostPK Foreign Key (dimDatePostPK) References dimDate(dimDatePostPK)
+	,Constraint FK_dimCPTCodePK Foreign Key (dimCPTCodePK) References dimCptCode(dimCPTCodePK)
+	,Constraint FK_dimPayerPK Foreign Key (dimPayerPK) References dimPayer(dimPayerPK)
+	,Constraint FK_dimTransactionPK Foreign Key (dimTransactionPK) References dimTransaction (dimTransactionPK)
+	,Constraint FK_dimLocationPK Foreign Key (dimLocationPK) References dimLocation (dimLocationPK)
+	,Constraint FK_dimDiagnosisCodePK Foreign Key (dimDiagnosisCodePK) References dimDiagnosisCode (dimDiagnosisCodePK);
+	
+--------------------------------------------------------------------------------------------------------------------
+  *NEW QUERY TAB*
+--------------------------------------------------------------------------------------------------------------------
+  USE HEALTHCARE_DB
+
+-- Part 1 
+-- Looking Up a specific Patient with Pt number 21383737
+
+SELECT
+	FirstName
+	,LastName
+	,City
+	,State
+FROM dimPatient
+WHERE PatientNumber = 21383737
+
+--Output: Found Patient: Anna McDonald who lives in Willow Run, IL
+
+--Part 2
+--Looking Up Specific service rendered at Fairview General Hospital
+
+SELECT DISTINCT
+	FirstName
+	,LastName
+	,City
+	,State
+	,LocationName
+	,dimDateServicePK
+FROM FactTable ft
+JOIN dimPatient pt
+	ON ft.dimPatientPK = pt.dimPatientPK
+JOIN dimLocation loc
+	ON loc.dimLocationPK = ft.dimLocationPK
+WHERE pt.PatientNumber = 21383737
+	AND LocationName = 'Fairview General Hospital'
+
+--Output: Found 1 Service Rendered on 12/15/2019
+
+--Part 3
+--Finding specific provider rendering the service and their charges (If pt was being seen by a different provider)
+
+SELECT DISTINCT
+	FirstName
+	,LastName
+	,City
+	,State
+	,LocationName
+	,ft.dimDateServicePK AS Date_of_Service
+	,ProviderName
+	,SUM(GrossCharge) AS Charges
+FROM FactTable ft
+	JOIN dimPatient pt
+		ON ft.dimPatientPK = pt.dimPatientPK
+	JOIN dimLocation loc
+		ON loc.dimLocationPK = ft.dimLocationPK
+	JOIN dimPhysician phy
+		ON phy.dimPhysicianPK = ft.dimPhysicianPK
+WHERE pt.PatientNumber = 21383737
+	AND LocationName = 'Fairview General Hospital'
+GROUP BY 
+	FirstName
+	,LastName
+	,City
+	,State
+	,LocationName
+  ,ft.dimDateServicePK 
+	,ProviderName
+	
+--Output: found 2 providers who provided services to the patient on 12/15/2019 and charges for their services.
+
+--Part 4
+--Retrieving additional information regarding the charges
+
+SELECT 
+	--FirstName
+	--,LastName
+	--,City
+	--,State
+	--,LocationName
+	--ft.dimDateServicePK AS Date_of_Service
+	ProviderName
+	,DiagnosisCode
+	,DiagnosisCodeDescription AS Description
+	,cpt.dimCPTCodePK AS CPTCode
+	,cpt.CptDesc AS Description
+	,SUM(GrossCharge) AS Charges
+FROM FactTable ft
+	JOIN dimPatient pt
+		ON ft.dimPatientPK = pt.dimPatientPK
+	JOIN dimLocation loc
+		ON loc.dimLocationPK = ft.dimLocationPK
+	JOIN dimPhysician phy
+		ON phy.dimPhysicianPK = ft.dimPhysicianPK
+	JOIN dimDiagnosisCode dgc
+		ON dgc.dimDiagnosisCodePK = ft.dimDiagnosisCodePK
+	JOIN dimCptCode cpt
+		ON cpt.dimCPTCodePK = ft.dimCPTCodePK
+WHERE pt.PatientNumber = 21383737
+	AND LocationName = 'Fairview General Hospital'
+GROUP BY 
+	--FirstName
+	--,LastName
+	--,City
+	--,State
+	--,LocationName
+	--ft.dimDateServicePK 
+  ProviderName
+	,DiagnosisCode
+	,DiagnosisCodeDescription
+	,cpt.dimCPTCodePK
+	,cpt.CptDesc
+
+--Output: 4 Rows - Showed the itemized descriptions for both Diagnosis and CPT code of each associated charges 
+
+--Part 5: Retrieving information about the transaction charges, if payments have been received, any adjustment, and the current balance due.
+
+SELECT 
+	--FirstName
+	--,LastName
+	--,City
+	--,State
+	--,LocationName
+	--,ft.dimDateServicePK AS Date_of_Service
+	--,ProviderName
+	--,DiagnosisCode
+	--,DiagnosisCodeDescription AS Description
+	--,cpt.dimCPTCodePK AS CPTCode
+	--,cpt.CptDesc AS Description
+  txn.[Transaction]
+	,SUM(GrossCharge) AS Charges
+	,SUM(Paytment) AS Payment
+	,SUM(Adjustment) AS Adjustment
+	,SUM(AR) AS Account_Receivable
+FROM FactTable ft
+	JOIN dimPatient pt
+		ON ft.dimPatientPK = pt.dimPatientPK
+	JOIN dimLocation loc
+		ON loc.dimLocationPK = ft.dimLocationPK
+	JOIN dimPhysician phy
+		ON phy.dimPhysicianPK = ft.dimPhysicianPK
+	JOIN dimDiagnosisCode dgc
+		ON dgc.dimDiagnosisCodePK = ft.dimDiagnosisCodePK
+	JOIN dimCptCode cpt
+		ON cpt.dimCPTCodePK = ft.dimCPTCodePK
+	JOIN dimTransaction txn
+		ON txn.dimTransactionPK = ft.dimTransactionPK
+	JOIN dimDate dat
+		ON dat.dimDatePostPK = ft.dimDatePostPK
+WHERE pt.PatientNumber = 21383737
+	AND LocationName = 'Fairview General Hospital'
+GROUP BY 
+	--FirstName
+	--,LastName
+	--,City
+	--,State
+	--,LocationName
+  --,ft.dimDateServicePK 
+	--,ProviderName	
+	--,DiagnosisCode
+	--,DiagnosisCodeDescription
+	--,cpt.dimCPTCodePK
+	--,cpt.CptDesc
+	txn.[Transaction]
+
+--Output: 21 Rows - of multiple data where a transaction or invoices went back and forth to the insurance company, patient, and the hospital
+
+--Changing the granularity 
+
+SELECT 
+	SUM(GrossCharge) AS Charges
+	,SUM(Paytment) AS Payment
+	,SUM(Adjustment) AS Adjustment
+	,SUM(AR) AS Account_Receivable
+FROM FactTable ft
+	JOIN dimPatient pt
+		ON ft.dimPatientPK = pt.dimPatientPK
+	JOIN dimLocation loc
+		ON loc.dimLocationPK = ft.dimLocationPK
+	JOIN dimPhysician phy
+		ON phy.dimPhysicianPK = ft.dimPhysicianPK
+	JOIN dimDiagnosisCode dgc
+		ON dgc.dimDiagnosisCodePK = ft.dimDiagnosisCodePK
+	JOIN dimCptCode cpt
+		ON cpt.dimCPTCodePK = ft.dimCPTCodePK
+	JOIN dimTransaction txn
+		ON txn.dimTransactionPK = ft.dimTransactionPK
+	JOIN dimDate dat
+		ON dat.dimDatePostPK = ft.dimDatePostPK
+WHERE pt.PatientNumber = 21383737
+	AND LocationName = 'Fairview General Hospital'
+
+--Output: 1 Row - Final Query
+ --		  Showing the Total Charges
+ --     Any Payment Received
+ --	    Any Adjustment
+ --		  and the balance due
+
+  
+  
