@@ -179,6 +179,7 @@ FROM dimPatient
 WHERE PatientNumber = 21383737
 
 --Output: Found Patient: Anna McDonald who lives in Willow Run, IL
+
 |FirstName | LastName |  City	  | State |
 |----------|----------|-----------|-------| 
 |Anna	   | McDonald |Willow Run | IL    |
