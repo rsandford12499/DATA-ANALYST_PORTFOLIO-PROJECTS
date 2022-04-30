@@ -180,11 +180,6 @@ WHERE PatientNumber = 21383737
 
 --Output: Found Patient: Anna McDonald who lives in Willow Run, IL
 
-| FirstName | LastName | City       | State |
-| --------- | -------- | ---------- | ----- |
-| Anna      | McDonald | Willow Run | IL    |
-
-
 --Part 2
 --Looking Up Specific service rendered at Fairview General Hospital
 
@@ -204,7 +199,6 @@ WHERE pt.PatientNumber = 21383737
 	AND LocationName = 'Fairview General Hospital'
 
 --Output: Found 1 Service Rendered on 12/15/2019
-![OUTPUT](https://i.ibb.co/n6frh2B/image2.png)
 
 --Part 3
 --Finding specific provider rendering the service and their charges (If pt was being seen by a different provider)
