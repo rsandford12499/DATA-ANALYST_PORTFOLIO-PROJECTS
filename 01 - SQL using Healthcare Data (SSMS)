@@ -203,7 +203,7 @@ WHERE pt.PatientNumber = 21383737
 	AND LocationName = 'Fairview General Hospital'
 
 --Output: Found 1 Service Rendered on 12/15/2019
-![OUTPUT](<img src="https://i.ibb.co/n6frh2B/image2.png" alt="image2" border="0">)
+![OUTPUT](https://i.ibb.co/n6frh2B/image2.png)
 
 --Part 3
 --Finding specific provider rendering the service and their charges (If pt was being seen by a different provider)
