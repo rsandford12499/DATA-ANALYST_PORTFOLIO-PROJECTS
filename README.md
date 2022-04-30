@@ -12,6 +12,7 @@
 * Obtain Nashville Housing dataset.
 * Import dataset into SQLServer.
 * Converting to Date format, populating NULL values, splitting data, modifying data, removing duplicates and deleting unused columns.
+* LINK to Original Data Source: [Kaggle](https://www.kaggle.com/datasets/tmthyjames/nashville-housing-data)
 * Link to Queries: [Data Cleaning in SQL](https://github.com/rsandford12499/DATA-ANALYST_PORTFOLIO-PROJECTS/blob/892b119256cc0f5054d09565b5fb188bae0d59f5/02%20-%20Data%20Cleaning%20-%20Nashville%20Housing)
 
 03 - SQL Data Exploration
