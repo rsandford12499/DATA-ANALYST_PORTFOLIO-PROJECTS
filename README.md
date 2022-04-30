@@ -29,4 +29,4 @@
 * Building our Visualizations.
 * Building our Dashboard.
 * Link to Queries:
-* Link to Dashboard: https://public.tableau.com/views/Covid-19Viz_16506724907500/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link
+* Link to Dashboard: [TABLEAU](https://public.tableau.com/views/Covid-19Viz_16506724907500/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link)
